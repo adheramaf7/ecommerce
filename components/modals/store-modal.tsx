@@ -3,6 +3,9 @@
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 import { Modal } from '@/components/ui/modal';
 import { useStoreModal } from '@/hooks/use-store-modal';
@@ -22,6 +25,8 @@ const formSchema = z.object({
 });
 
 const StoreModal = () => {
+   const [isLoading, setIsLoading] = useState(false);
+
    const storeModal = useStoreModal();
    const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -31,8 +36,17 @@ const StoreModal = () => {
    });
 
    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-      console.log(values);
-      //TODO: CREATE FORM
+      try {
+         setIsLoading(true);
+
+         const response = await axios.post('/api/stores', values);
+
+         window.location.assign(`/${response.data.id}`);
+      } catch (error) {
+         toast.error('Something went wrong!');
+      } finally {
+         setIsLoading(false);
+      }
    };
 
    return (
@@ -52,17 +66,23 @@ const StoreModal = () => {
                            <FormItem>
                               <FormLabel>Name</FormLabel>
                               <FormControl>
-                                 <Input placeholder="E-Commerce" {...field} />
+                                 <Input disabled={isLoading} placeholder="E-Commerce" {...field} />
                               </FormControl>
                               <FormMessage />
                            </FormItem>
                         )}
                      />
                      <div className="pt-6 space-x-2 flex items-center justify-end w-full">
-                        <Button type="button" variant={'outline'} onClick={storeModal.onClose}>
+                        <Button
+                           type="button"
+                           variant={'outline'}
+                           onClick={storeModal.onClose}
+                           disabled={isLoading}>
                            Cancel
                         </Button>
-                        <Button type="submit">Continue</Button>
+                        <Button type="submit" disabled={isLoading}>
+                           Continue
+                        </Button>
                      </div>
                   </form>
                </Form>
