@@ -151,9 +151,16 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
                <Button disabled={loading} className="ml-auto" type="submit">
                   {action}
                </Button>
+               <Button
+                  disabled={loading}
+                  className="ml-3"
+                  variant={'outline'}
+                  type="button"
+                  onClick={() => router.push(`/${params.storeId}/billboards`)}>
+                  Cancel
+               </Button>
             </form>
          </Form>
-         <Separator />
       </>
    );
 };
