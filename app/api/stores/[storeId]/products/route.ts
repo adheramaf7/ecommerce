@@ -93,6 +93,7 @@ export async function GET(
         const sizeId = searchParams.get('sizeId') || undefined;
         const colorId = searchParams.get('colorId') || undefined;
         const isFeatured = searchParams.get('isFeatured');
+        console.log(params.storeId);
 
         if (!params.storeId) {
             return new NextResponse('Store ID is required', { status: 400 });
@@ -118,7 +119,8 @@ export async function GET(
             }
         });
 
-        return NextResponse.json(products, { status: 201 });
+
+        return NextResponse.json(products);
     } catch (error) {
         console.log('[PRODUCTS_GET]', error);
 
